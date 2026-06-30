@@ -1,0 +1,22 @@
+{
+    "env": {
+        "ANTHROPIC_API_KEY": "",
+        "ANTHROPIC_BASE_URL": "",
+        "ANTHROPIC_MODEL": "",
+        "ANTHROPIC_DEFAULT_OPUS_MODEL": "",
+        "ANTHROPIC_DEFAULT_HAIKU_MODEL": "",
+        "ANTHROPIC_DEFAULT_SONNET_MODEL": "",
+        "ANTHROPIC_AUTH_TOKEN": "",
+        "DISABLE_AUTOUPDATER": "1",
+        "ENABLE_TOOL_SEARCH": "true",
+        "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+        "IS_SANDBOX": "1",
+        "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+    },
+    "includeCoAuthoredBy": false,
+    "permissions": {
+        "defaultMode": "bypassPermissions"
+    },
+    "skipDangerousModePermissionPrompt": true,
+    "hasCompletedOnboarding": true   // *
+}

@@ -1,184 +1,233 @@
 # Offline AI Coding Tools Deployment Pack
 
-> 一套脚本化的内网部署方案，用于在无互联网环境的 Windows 机器上安装 AI 编程工具。
+> 用于内网环境的 AI 编程工具离线部署方案。所有工具均支持断网安装。
 
 ## 目录
 
-- [工具清单](#工具清单)
-- [使用方式](#使用方式)
-- [目录结构](#目录结构)
-- [各工具说明](#各工具说明)
+- [前置要求](#前置要求)
+- [全流程概览](#全流程概览)
+- [Claude Code CLI](#claude-code-cli)
+- [Codex CLI](#codex-cli)
+- [Codex Desktop](#codex-desktop)
+- [附录](#附录)
 
 ---
 
-## 工具清单
+## 前置要求
 
-| 工具 | 版本 | 类型 | 安装方式 |
-|------|------|------|---------|
-| **Claude Code CLI** | 2.1.195 | Anthropic 官方 AI 编码助手 | npm + 原生二进制 |
-| **Codex CLI** | 0.142.4 | OpenAI 官方 AI 编码助手 | npm + 原生二进制 |
-| **Codex Desktop** | 2026.6.25.261 | OpenAI 官方桌面 IDE | Microsoft Store / MSIX |
+| 项目 | 要求 |
+|------|------|
+| 架构 | Windows 10/11 64 位（x64） |
+| 权限 | 安装时需要管理员权限 |
+| 联网机 | 首次准备需要一台能访问 GitHub / npm / Node.js 官网的机器 |
+| 存储 | 每个工具约 350~450 MB 磁盘空间 |
 
 ---
 
-## 使用方式
+## 全流程概览
 
-### 前置条件
+所有三个工具遵循同一套流程：
 
-- Windows 10/11 64 位
-- 管理员权限（安装时需要写入环境变量）
-- 首次准备需要一台有互联网的机器来下载依赖
+```text
+第 1 步: 联网机下载材料     →  scripts\pack-online.bat
+第 2 步: 拷贝到内网机器     →  USB / 内部共享
+第 3 步: 内网一键安装       →  setup.bat（右键管理员）
+第 4 步: 配置内网 API       →  settings.ini 或环境变量
+```
 
-### 快速开始
+---
 
-**第一步：在联网机上准备材料**
+## Claude Code CLI
+
+> Anthropic 官方的终端 AI 编程助手。原生 Windows 二进制，不依赖 Node 运行时。
+
+### 全流程
+
+**第 1 步 — 联网机下载**
 
 ```cmd
 cd cc-offline
 scripts\pack-online.bat
 ```
 
-脚本会自动下载 nvm-windows、Node.js 和对应的 AI 工具。
+自动下载到本地目录：
 
-**第二步：拷贝到内网**
+| 下载项 | 位置 | 大小 |
+|--------|------|------|
+| nvm-windows | `nvm\` | 16 MB |
+| Node.js 26.4.0 + npm | `node\` | 115 MB |
+| claude.exe 原生二进制 | `claude-code-offline\` | 225 MB |
+| **总计** | | **~355 MB** |
 
-将整个包目录复制到 U 盘，带到内网机器。
+**第 2 步 — 拷贝到内网**
 
-**第三步：安装**
+将整个 `cc-offline\` 目录复制到内网机器的任意位置（如 `D:\tools\cc-offline\`）。
 
-右键 `setup.bat` → **以管理员身份运行**，等待完成。
-
-**第四步：验证**
+**第 3 步 — 内网安装**
 
 ```cmd
-node --version
-npm --version
-claude --version    (cc-offline)
-codex --version     (codex-offline)
+# 右键 → 以管理员身份运行
+setup.bat
+```
+
+安装内容：
+
+| 组件 | 安装到 |
+|------|--------|
+| nvm-windows | `%USERPROFILE%\.nvm\` |
+| Node.js + npm | `%USERPROFILE%\.nvm\nodejs\` |
+| claude.exe | `%USERPROFILE%\claude-code\bin\claude.exe` |
+| 命令行入口 | `%USERPROFILE%\.nvm\claude.cmd` |
+| 环境变量 | PATH 追加 nvm 目录，设置 `ANTHROPIC_BASE_URL` |
+
+安装完成后关掉终端重开。验证：
+
+```cmd
+claude --version
 ```
 
 ---
 
-## 目录结构
+## Codex CLI
+
+> OpenAI 官方的终端 AI 编码代理。JS 包装器 + 原生 Rust 二进制。
+
+### 全流程
+
+**第 1 步 — 联网机下载**
+
+```cmd
+cd codex-offline
+scripts\pack-online.bat
+```
+
+| 下载项 | 位置 | 大小 |
+|--------|------|------|
+| nvm-windows | `nvm\` | 16 MB |
+| Node.js 26.4.0 + npm | `node\` | 115 MB |
+| codex.js + codex.exe(308MB) | `codex-offline\` | 322 MB |
+| **总计** | | **~452 MB** |
+
+**第 2 步 — 拷贝到内网**
+
+将整个 `codex-offline\` 目录复制到内网机器。
+
+**第 3 步 — 内网安装**
+
+```cmd
+# 右键 → 以管理员身份运行
+setup.bat
+```
+
+安装内容：
+
+| 组件 | 安装到 |
+|------|--------|
+| nvm-windows | `%USERPROFILE%\.nvm\` |
+| Node.js + npm | `%USERPROFILE%\.nvm\nodejs\` |
+| codex.js + native binary | `%USERPROFILE%\codex\` |
+| 命令行入口 | `%USERPROFILE%\.nvm\codex.cmd` |
+| 环境变量 | PATH 追加 nvm 目录，设置 `OPENAI_BASE_URL` |
+
+验证：
+
+```cmd
+codex --version
+```
+
+---
+
+## Codex Desktop
+
+> OpenAI 官方的桌面 IDE，基于 Electron/Chromium。通过微软商店分发。
+
+### 全流程
+
+**第 1 步 — 联网机下载**
+
+```cmd
+cd codex-desktop-offline
+scripts\pack-online.bat
+```
+
+| 下载项 | 位置 | 大小 |
+|--------|------|------|
+| 微软商店安装器(stub) | `pkg\CodexDesktopInstaller.exe` | 1.3 MB |
+
+> 下载器 stub（1.3MB），首次运行需要从微软 CDN 拉取完整应用。
+
+**第 2 步 — 拷贝到内网**
+
+将 `codex-desktop-offline\` 目录复制到内网机器。
+
+**第 3 步 — 获取纯离线 MSIX**
+
+如果内网完全断网，需要提前在有网机器上提取完整安装包：
+
+```cmd
+# 在有 Codex Desktop 已安装的机器上运行（管理员）
+scripts\extract-msix.bat
+```
+
+该脚本会自动从 `C:\Program Files\WindowsApps\` 找到 Codex Desktop 的安装目录，完整复制到 `pkg\AppxPackage\`。将这个目录拷回内网后，`setup.bat` 会自动走离线安装路径（无需联网）。
+
+**第 3 步 — 安装**
+
+```cmd
+# 右键 → 以管理员身份运行
+setup.bat
+```
+
+`setup.bat` 会按以下优先级尝试：
+
+| 优先级 | 安装方式                           | 要求                         |
+| ------ | ---------------------------------- | ---------------------------- |
+| ①      | `Add-AppxPackage -Register`        | 已有 `pkg\AppxPackage\` 目录 |
+| ②      | `Add-AppxPackage -Path`            | 已有 `pkg\*.msix` 文件       |
+| ③      | `Add-AppxProvisionedPackage`       | 已有 `pkg\AppxPackage\` 目录 |
+| ④      | `DISM /Add-ProvisionedAppxPackage` | 已有 `pkg\AppxPackage\` 目录 |
+| ⑤      | 运行安装器 stub                    | 需首次联网                   |
+
+---
+
+## 附录
+
+### 目录说明
 
 ```
 pack/
-├── README.md
-│
-├── cc-offline/                # Claude Code CLI 离线包
-│   ├── settings.ini           # 版本配置
-│   ├── setup.bat              # 内网安装脚本（管理员）
+├── cc-offline/                  Claude Code CLI 包
+│   ├── settings.ini             版本与 API 配置
+│   ├── settings.json            Claude Code 预配置（放入 ~/.claude/）
+│   ├── setup.bat                内网安装脚本（管理员运行）
 │   └── scripts/
-│       ├── pack-online.bat    # 联网下载脚本
-│       └── verify.bat         # 安装验证
+│       ├── pack-online.bat      联网机下载脚本
+│       └── verify.bat           安装后验证
 │
-├── codex-offline/             # Codex CLI 离线包
+├── codex-offline/               Codex CLI 包
 │   ├── settings.ini
+│   ├── settings.json
 │   ├── setup.bat
 │   └── scripts/
 │       ├── pack-online.bat
 │       └── verify.bat
 │
-└── codex-desktop-offline/     # Codex Desktop 离线包
+└── codex-desktop-offline/       Codex Desktop 包
     ├── settings.ini
     ├── setup.bat
     └── scripts/
         ├── pack-online.bat
-        ├── extract-msix.bat   # 从已安装机器导出 MSIX
+        ├── extract-msix.bat     从已装机提取离线包
         └── verify.bat
 ```
 
-### 下载说明
+### 常见问题
 
-运行 `pack-online.bat` 后会在各自目录下生成：
+**Q：setup.bat 提示需要管理员权限？**
+A：右键 setup.bat → 以管理员身份运行。
 
-| 包 | 下载后新增的目录/文件 | 大小 |
-|----|----------------------|------|
-| `cc-offline/` | `nvm/`, `node/node-v26.4.0-win-x64/`, `claude-code-offline/` | ~355 MB |
-| `codex-offline/` | `nvm/`, `node/node-v26.4.0-win-x64/`, `codex-offline/` | ~452 MB |
-| `codex-desktop-offline/` | `pkg/CodexDesktopInstaller.exe` | ~1.3 MB |
+**Q：pack-online.bat 下载失败？**
+A：检查互联网连接。需要能访问 GitHub、nodejs.org、npmjs.org。
 
-> **注意**：Codex Desktop 的安装器是微软商店下载器 stub，首次安装需要联网。
-> 如需纯离线 MSIX，在已安装 Codex Desktop 的机器上运行 `scripts\extract-msix.bat`。
-
----
-
-## 各工具说明
-
-### cc-offline — Claude Code CLI
-
-Claude Code 是 Anthropic 官方的终端 AI 编程助手。
-
-- **安装文件**：`claude-code-offline\node_modules\@anthropic-ai\claude-code\bin\claude.exe` (225 MB 原生二进制)
-- **安装路径**：`%USERPROFILE%\claude-code\bin\claude.exe`
-- **命令行入口**：`claude`（通过 `%USERPROFILE%\.nvm\claude.cmd`）
-- **环境变量**：`ANTHROPIC_BASE_URL`（内网 API 地址）
-
-### codex-offline — Codex CLI
-
-Codex CLI 是 OpenAI 官方的终端 AI 编码代理。
-
-- **入口文件**：`codex-offline\node_modules\@openai\codex\bin\codex.js`（JS 包装器）
-- **原生二进制**：`codex-offline\...\codex-win32-x64\vendor\...\bin\codex.exe` (309 MB)
-- **安装路径**：`%USERPROFILE%\codex\bin\codex.js`
-- **命令行入口**：`codex`（通过 `%USERPROFILE%\.nvm\codex.cmd`）
-- **环境变量**：`OPENAI_BASE_URL`（内网 API 地址）
-
-### codex-desktop-offline — Codex Desktop
-
-Codex Desktop 是 OpenAI 官方的桌面 IDE，基于 Electron/Chromium。
-
-- **分发方式**：Microsoft Store（Windows 无独立 MSIX 下载链接）
-- **安装文件**：`pkg/CodexDesktopInstaller.exe` (1.3 MB 下载器 stub)
-- **纯离线安装**：详见下方"提取 MSIX"部分
-
-#### 提取 MSIX（纯离线部署）
-
-Codex Desktop 在 Windows 上仅通过 Microsoft Store 分发。要获得纯离线安装包：
-
-1. 在有互联网的机器上从 Microsoft Store 安装 Codex Desktop
-2. 将本项目复制到该机器
-3. 以管理员身份运行 `scripts\extract-msix.bat`
-4. 脚本会从 `C:\Program Files\WindowsApps\` 提取完整应用到 `pkg\AppxPackage\`
-5. 将 `pkg\AppxPackage\` 复制到内网机器的对应位置
-6. `setup.bat` 会自动检测并执行离线安装
-
----
-
-## 安装细节
-
-`setup.bat` 完成以下操作：
-
-1. **nvm-windows**：部署到 `%USERPROFILE%\.nvm\`
-2. **Node.js + npm**：注册到 `%USERPROFILE%\.nvm\nodejs\`
-3. **AI 工具**：复制到 `%USERPROFILE%\claude-code\` 或 `%USERPROFILE%\codex\`
-4. **命令行入口**：创建 `%USERPROFILE%\.nvm\claude.cmd` 或 `codex.cmd`
-5. **环境变量**：追加 `PATH`，设置 `ANTHROPIC_BASE_URL` 或 `OPENAI_BASE_URL`
-
----
-
-## 常见问题
-
-**Q: setup.bat 提示需要管理员权限？**
-A: 右键 setup.bat → 以管理员身份运行。
-
-**Q: pack-online.bat 下载失败？**
-A: 检查互联网连接，或使用代理/VPN。保证能访问 GitHub、nodejs.org、npmjs.org。
-
-**Q: 安装后命令行找不到 claude/codex？**
-A: 关闭当前终端，打开新终端。如果仍然找不到，重启 Windows。
-
-**Q: 内网 API 地址怎么配置？**
-A: 安装后手动设置环境变量：
-```cmd
-set ANTHROPIC_BASE_URL=http://your-internal-api:8080
-set ANTHROPIC_API_KEY=***
-```# --- 或 ---
-set OPENAI_BASE_URL=http://your-internal-api:8080
-set OPENAI_API_KEY=***
-```## License
-
-各工具本身遵循其原作者的许可证：
-- **Claude Code CLI** © Anthropic
-- **Codex CLI / Codex Desktop** © OpenAI
-- 本仓库脚本基于 MIT 许可证
+**Q：安装后命令行找不到 claude / codex？**
+A：关闭当前终端，打开新终端。如果仍然找不到，重启 Windows。

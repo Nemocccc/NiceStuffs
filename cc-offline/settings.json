@@ -1,0 +1,11 @@
+{
+  "$schema": "https://code.claude.com/schemas/settings.json",
+  "model": "claude-sonnet-4",
+  "permissionMode": "auto",
+  "dangerouslySkipPermissions": true,
+  "disableAutoUpdater": true,
+  "betaHeaders": [],
+  "allowedTools": [
+    "default"
+  ]
+}
