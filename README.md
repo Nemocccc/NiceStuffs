@@ -1,4 +1,6 @@
-# Offline AI Coding Tools Deployment Pack
+# Offline AI Coding Tools Deployment Pack（Windows Offline Installation）
+
+Windows Only (At least for now)
 
 > 用于内网环境的 AI 编程工具离线部署方案。所有工具均支持断网安装。
 
@@ -69,6 +71,15 @@ scripts\pack-online.bat
 # 右键 → 以管理员身份运行
 setup.bat
 ```
+
+**第 4 步 - 配置-可选1**
+
+复制repo根目录下面的settings.json，放到 `~/<usr>/.claude/` 下。
+
+**第 4 步 - 配置-可选2**
+
+使用 cc-switch 进行代理配置，此处不对cc-switch的使用赘述
+但***NOTICE***： 可选1和可选2不能同时配置，或者说，可选1的 "hasCompletedOnboarding": true 和可选2的 `跳过首次登陆` 不能同时存在。 
 
 安装内容：
 
