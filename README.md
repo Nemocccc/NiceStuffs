@@ -130,6 +130,10 @@ scripts\pack-online.bat
 setup.bat
 ```
 
+**第 4 步 - 配置**
+
+使用 cc-switch 进行代理配置，此处不对cc-switch的使用赘述
+
 安装内容：
 
 | 组件 | 安装到 |
